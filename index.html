@@ -1,0 +1,1491 @@
+<!doctype html>
+<html lang="vi" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CineStream - LEGO ONE PIECE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Cinzel:wght@600;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Plus Jakarta Sans"', "sans-serif"],
+              display: ['"Cinzel"', "serif"],
+            },
+            colors: {
+              brand: {
+                50: "#fff1f2",
+                500: "#f43f5e",
+                600: "#e11d48",
+                700: "#be123c",
+                gold: "#f59e0b",
+              },
+              cinema: {
+                950: "#06080e",
+                900: "#0a0d14",
+                850: "#0f141f",
+                800: "#141a29",
+                700: "#1e2638",
+                600: "#2c374e",
+              },
+            },
+            boxShadow: {
+              glow: "0 0 40px -10px rgba(225, 29, 72, 0.35)",
+              screen:
+                "0 20px 60px -15px rgba(0, 0, 0, 0.9), 0 0 30px rgba(225, 29, 72, 0.15)",
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      /* Custom scrollbars */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0a0d14;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #2c374e;
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #e11d48;
+      }
+
+      /* Ambient glow backdrop animation */
+      @keyframes pulse-slow {
+        0%,
+        100% {
+          opacity: 0.18;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.28;
+          transform: scale(1.05);
+        }
+      }
+      .animate-ambient {
+        animation: pulse-slow 8s ease-in-out infinite;
+      }
+
+      /* Cinema Lights off effect */
+      #lights-dimmer {
+        pointer-events: none;
+        transition: opacity 0.5s ease-in-out;
+      }
+      body.lights-off #lights-dimmer {
+        pointer-events: all;
+        opacity: 0.94;
+      }
+      body.lights-off .cinema-stage {
+        z-index: 50;
+        position: relative;
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-cinema-950 text-slate-100 min-h-screen font-sans selection:bg-rose-600 selection:text-white relative overflow-x-hidden antialiased"
+  >
+    <!-- Ambient background glow layers -->
+    <div
+      id="ambient-backdrop"
+      class="fixed inset-0 pointer-events-none z-0 overflow-hidden"
+    >
+      <div
+        id="ambient-poster-bg"
+        class="absolute -top-32 left-1/2 -translate-x-1/2 w-[110vw] h-[800px] bg-cover bg-center opacity-15 blur-3xl filter saturate-150 animate-ambient"
+      ></div>
+      <div
+        class="absolute inset-0 bg-gradient-to-b from-transparent via-cinema-950/80 to-cinema-950"
+      ></div>
+      <div
+        class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-rose-950/20 via-transparent to-transparent"
+      ></div>
+    </div>
+
+    <!-- Theater mode overlay (Turn off lights) -->
+    <div
+      id="lights-dimmer"
+      class="fixed inset-0 bg-black opacity-0 z-40 transition-opacity duration-500 backdrop-blur-sm"
+    ></div>
+
+    <!-- Top Header Navigation -->
+    <header
+      class="sticky top-0 z-30 w-full bg-cinema-950/85 backdrop-blur-md border-b border-white/5 transition-all duration-300"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4"
+      >
+        <!-- Brand Logo -->
+        <div class="flex items-center gap-3">
+          <a href="#" class="flex items-center gap-2.5 group">
+            <div
+              class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 to-amber-500 flex items-center justify-center shadow-lg shadow-rose-600/30 group-hover:scale-105 transition-transform"
+            >
+              <svg
+                class="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div>
+              <span
+                class="font-display tracking-wider font-bold text-lg bg-gradient-to-r from-white via-slate-100 to-rose-400 bg-clip-text text-transparent"
+                >CINESTREAM</span
+              >
+              <span
+                class="block text-[10px] text-rose-400 font-semibold tracking-widest uppercase"
+                >Personal Theater</span
+              >
+            </div>
+          </a>
+
+          <!-- Breadcrumb badge -->
+          <div
+            class="hidden md:flex items-center gap-2 pl-4 border-l border-white/10 text-xs text-slate-400"
+          >
+            <span>Phim bộ</span>
+            <span>/</span>
+            <span
+              id="nav-movie-name"
+              class="text-rose-400 font-medium truncate max-w-[200px]"
+              >LEGO ONE PIECE</span
+            >
+          </div>
+        </div>
+
+        <!-- Quick Action Controls -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Cinema Lights toggle -->
+          <button
+            id="toggle-lights-btn"
+            title="Bật/Tắt đèn rạp chiếu"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cinema-850 hover:bg-cinema-700 text-slate-300 hover:text-amber-400 text-xs font-medium border border-white/10 transition-all shadow-sm"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+              />
+            </svg>
+            <span class="hidden sm:inline" id="lights-text">Tắt đèn</span>
+          </button>
+
+          <!-- Theater Width toggle -->
+          <button
+            id="theater-mode-btn"
+            title="Chế độ rạp phim mở rộng"
+            class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cinema-850 hover:bg-cinema-700 text-slate-300 hover:text-white text-xs font-medium border border-white/10 transition-all"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+              />
+            </svg>
+            <span id="theater-text">Rộng màn</span>
+          </button>
+
+          <!-- Dynamic JSON modal trigger -->
+          <button
+            id="open-json-modal-btn"
+            class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold shadow-md shadow-rose-600/30 transition-all hover:scale-102"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            <span>Nhập Phim Mới</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Cinema Experience Container -->
+    <main
+      class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8"
+    >
+      <!-- CINEMA STAGE & VIDEO PLAYER -->
+      <section
+        id="player-container"
+        class="cinema-stage w-full transition-all duration-500 ease-out"
+      >
+        <!-- Player Header Card -->
+        <div
+          class="bg-gradient-to-b from-cinema-850 to-cinema-900 border border-white/10 rounded-2xl shadow-screen overflow-hidden"
+        >
+          <!-- Video Screen Wrapper (16:9 Aspect Ratio) -->
+          <div
+            class="relative w-full aspect-video bg-black group overflow-hidden"
+          >
+            <!-- Loading Spinner overlay -->
+            <div
+              id="player-loader"
+              class="absolute inset-0 bg-cinema-950/90 flex flex-col items-center justify-center gap-3 z-20 transition-opacity duration-300"
+            >
+              <div class="relative">
+                <div
+                  class="w-14 h-14 border-4 border-rose-600/20 border-t-rose-500 rounded-full animate-spin"
+                ></div>
+                <div
+                  class="w-8 h-8 border-4 border-amber-500/20 border-b-amber-400 rounded-full animate-spin absolute inset-0 m-auto"
+                ></div>
+              </div>
+              <p
+                class="text-sm font-medium text-slate-300 tracking-wide animate-pulse"
+              >
+                Đang nạp nguồn phát...
+              </p>
+            </div>
+
+            <!-- Video iframe -->
+            <iframe
+              id="video-frame"
+              src=""
+              class="w-full h-full border-0 transition-opacity duration-500"
+              allow="
+                accelerometer;
+                autoplay;
+                clipboard-write;
+                encrypted-media;
+                gyroscope;
+                picture-in-picture;
+                web-share;
+              "
+              allowfullscreen
+              referrerpolicy="no-referrer"
+              title="Movie Stream"
+            >
+            </iframe>
+
+            <!-- Hover HUD indicator bar -->
+            <div
+              class="absolute top-3 left-3 pointer-events-none flex items-center gap-2 z-10"
+            >
+              <span
+                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[11px] font-semibold text-rose-400 border border-white/10"
+              >
+                <span
+                  class="w-2 h-2 rounded-full bg-rose-500 animate-ping"
+                ></span>
+                STREAMING
+              </span>
+              <span
+                id="player-badge-current"
+                class="px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-md text-[11px] font-medium text-slate-300 border border-white/10"
+              >
+                Tập 1 - Vietsub #1
+              </span>
+            </div>
+          </div>
+
+          <!-- Player Auxiliary Utility Bar -->
+          <div
+            class="px-4 py-3 bg-cinema-900/90 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs"
+          >
+            <!-- Left: Current episode status -->
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-2">
+                <span class="text-slate-400">Đang phát:</span>
+                <span
+                  id="current-now-playing-label"
+                  class="text-white font-semibold flex items-center gap-1.5"
+                >
+                  <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                  Tập 1
+                </span>
+              </div>
+              <span class="text-slate-600">|</span>
+              <span id="current-server-label" class="text-amber-400 font-medium"
+                >Vietsub #1</span
+              >
+            </div>
+
+            <!-- Right: Control buttons -->
+            <div class="flex items-center gap-2">
+              <!-- Previous Episode -->
+              <button
+                id="btn-prev-ep"
+                class="px-2.5 py-1.5 rounded-lg bg-cinema-800 hover:bg-cinema-700 disabled:opacity-40 disabled:hover:bg-cinema-800 text-slate-300 hover:text-white font-medium transition-colors flex items-center gap-1"
+              >
+                <svg
+                  class="w-3.5 h-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7"
+                  />
+                </svg>
+                <span>Tập trước</span>
+              </button>
+
+              <!-- Next Episode -->
+              <button
+                id="btn-next-ep"
+                class="px-2.5 py-1.5 rounded-lg bg-cinema-800 hover:bg-cinema-700 disabled:opacity-40 disabled:hover:bg-cinema-800 text-slate-300 hover:text-white font-medium transition-colors flex items-center gap-1"
+              >
+                <span>Tập kế tiếp</span>
+                <svg
+                  class="w-3.5 h-3.5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </button>
+
+              <!-- Reload iframe -->
+              <button
+                id="btn-reload-player"
+                title="Tải lại nguồn phát nếu bị lỗi"
+                class="p-1.5 rounded-lg bg-cinema-800 hover:bg-cinema-700 text-slate-300 hover:text-white transition-colors"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                  />
+                </svg>
+              </button>
+
+              <!-- Open direct in new tab -->
+              <a
+                id="btn-direct-link"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Mở link trực tiếp trong tab mới"
+                class="p-1.5 rounded-lg bg-cinema-800 hover:bg-cinema-700 text-slate-300 hover:text-white transition-colors"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  />
+                </svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SERVER & EPISODE SELECTION SECTION -->
+      <section
+        class="bg-cinema-900/70 border border-white/5 rounded-2xl p-5 backdrop-blur-sm shadow-xl space-y-4"
+      >
+        <div
+          class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-white/10"
+        >
+          <div class="flex items-center gap-2">
+            <div class="p-1.5 rounded-lg bg-rose-500/10 text-rose-400">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                />
+              </svg>
+            </div>
+            <div>
+              <h2 class="text-base font-bold text-white tracking-wide">
+                CHỌN NGUỒN PHÁT & TẬP PHIM
+              </h2>
+              <p class="text-xs text-slate-400">
+                Chuyển server khác nếu video tải chậm hoặc gặp lỗi
+              </p>
+            </div>
+          </div>
+
+          <!-- Server Selector Tabs -->
+          <div
+            id="server-tabs-container"
+            class="flex flex-wrap gap-1.5 p-1 bg-cinema-950 rounded-xl border border-white/10"
+          >
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
+
+        <!-- Episode Grid -->
+        <div>
+          <div
+            class="flex items-center justify-between mb-3 text-xs text-slate-400"
+          >
+            <span>Danh sách tập:</span>
+            <span id="episodes-count-text" class="text-rose-400 font-semibold"
+              >2 tập có sẵn</span
+            >
+          </div>
+          <div
+            id="episodes-container"
+            class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5"
+          >
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
+      </section>
+
+      <!-- MOVIE METADATA & DETAILS -->
+      <section class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Left Column: Poster Card -->
+        <div class="lg:col-span-4 xl:col-span-3">
+          <div
+            class="group relative rounded-2xl overflow-hidden bg-cinema-900 border border-white/10 shadow-2xl p-2.5 transition-all hover:border-rose-500/40"
+          >
+            <div
+              class="relative aspect-[2/3] w-full rounded-xl overflow-hidden bg-cinema-850"
+            >
+              <img
+                id="movie-poster-img"
+                src=""
+                alt="Movie Poster"
+                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                onerror="
+                  this.onerror = null;
+                  this.src =
+                    'https://placehold.co/600x900/141a29/ffffff?text=Poster+Not+Found';
+                "
+              />
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-cinema-950 via-transparent to-transparent opacity-80"
+              ></div>
+
+              <!-- Quality & Audio Badge overlay on poster -->
+              <div class="absolute top-3 left-3 flex flex-col gap-1.5">
+                <span
+                  id="badge-quality"
+                  class="px-2 py-0.5 rounded text-[11px] font-extrabold bg-amber-500 text-black tracking-wider shadow"
+                  >HD</span
+                >
+                <span
+                  id="badge-lang"
+                  class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-600/90 text-white tracking-wide backdrop-blur-sm"
+                  >Vietsub + Lồng tiếng</span
+                >
+              </div>
+
+              <!-- TMDB Score badge -->
+              <div
+                class="absolute bottom-3 left-3 right-3 flex items-center justify-between"
+              >
+                <div
+                  class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-black/80 backdrop-blur-md border border-white/10 text-amber-400 text-xs font-bold"
+                >
+                  <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 20 20">
+                    <path
+                      d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                    />
+                  </svg>
+                  <span id="rating-tmdb-value">10.0</span>
+                  <span class="text-[10px] text-slate-400 font-normal"
+                    >TMDB</span
+                  >
+                </div>
+                <div
+                  id="imdb-tag"
+                  class="px-2 py-1 rounded-lg bg-black/80 backdrop-blur-md border border-white/10 text-slate-300 text-xs font-mono font-medium"
+                >
+                  IMDb tt41538904
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Stats Below Poster -->
+            <div
+              class="pt-3 pb-1 px-1 flex items-center justify-between text-xs text-slate-400 border-t border-white/5 mt-2"
+            >
+              <span class="flex items-center gap-1">
+                <svg
+                  class="w-3.5 h-3.5 text-rose-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+                <span id="stat-views">17</span> lượt xem
+              </span>
+              <span class="flex items-center gap-1">
+                <svg
+                  class="w-3.5 h-3.5 text-amber-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span id="stat-time">35 phút</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Titles, Synopsis, Cast, Categories -->
+        <div class="lg:col-span-8 xl:col-span-9 space-y-6">
+          <!-- Main Title Header -->
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center gap-2">
+              <span
+                id="badge-status"
+                class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+              >
+                Hoàn Tất (2/2)
+              </span>
+              <span
+                id="meta-year"
+                class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cinema-800 text-slate-300 border border-white/10"
+              >
+                2026
+              </span>
+              <span
+                id="meta-type"
+                class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-cinema-800 text-slate-300 border border-white/10 uppercase"
+              >
+                Series
+              </span>
+            </div>
+
+            <h1
+              id="movie-title"
+              class="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight uppercase"
+            >
+              LEGO ONE PIECE
+            </h1>
+            <h2
+              id="movie-origin-title"
+              class="text-base sm:text-lg text-rose-400/90 font-medium tracking-wide"
+            >
+              LEGO ONE PIECE (2026)
+            </h2>
+          </div>
+
+          <!-- Synopsis Card -->
+          <div
+            class="p-5 rounded-2xl bg-cinema-900/60 border border-white/5 space-y-2"
+          >
+            <h3
+              class="text-sm font-bold text-slate-200 tracking-wider uppercase flex items-center gap-2"
+            >
+              <svg
+                class="w-4 h-4 text-rose-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h7"
+                />
+              </svg>
+              Nội dung tóm tắt
+            </h3>
+            <p
+              id="movie-content"
+              class="text-sm sm:text-base text-slate-300 leading-relaxed font-normal"
+            >
+              Usopp spins a tall tale about the Straw Hats' journey across the
+              East Blue into the Grand Line before Chopper joined the crew.
+            </p>
+          </div>
+
+          <!-- Cast / Actors Section -->
+          <div class="space-y-3">
+            <h3
+              class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2"
+            >
+              <svg
+                class="w-4 h-4 text-amber-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+              Diễn viên
+            </h3>
+            <div id="actors-container" class="flex flex-wrap gap-2">
+              <!-- Injected via JavaScript -->
+            </div>
+          </div>
+
+          <!-- Genres and Countries Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Categories / Genres -->
+            <div
+              class="p-4 rounded-xl bg-cinema-900/40 border border-white/5 space-y-2.5"
+            >
+              <h4
+                class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+              >
+                Thể loại
+              </h4>
+              <div id="genres-container" class="flex flex-wrap gap-1.5">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+
+            <!-- Country Tags -->
+            <div
+              class="p-4 rounded-xl bg-cinema-900/40 border border-white/5 space-y-2.5"
+            >
+              <h4
+                class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+              >
+                Quốc gia sản xuất
+              </h4>
+              <div id="countries-container" class="flex flex-wrap gap-1.5">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Keywords Tags -->
+          <div class="space-y-2">
+            <h4
+              class="text-xs font-bold text-slate-400 uppercase tracking-wider"
+            >
+              Từ khóa nổi bật
+            </h4>
+            <div id="keywords-container" class="flex flex-wrap gap-1.5">
+              <!-- Injected via JavaScript -->
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- MODAL: DYNAMIC JSON IMPORTER (Bonus Extensibility Feature) -->
+    <div
+      id="json-modal"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300"
+    >
+      <div
+        class="relative w-full max-w-2xl bg-cinema-900 border border-white/10 rounded-2xl shadow-2xl p-6 space-y-4 max-h-[90vh] flex flex-col transform scale-95 transition-transform duration-300"
+        id="json-modal-card"
+      >
+        <!-- Modal Header -->
+        <div
+          class="flex items-center justify-between pb-3 border-b border-white/10"
+        >
+          <div class="flex items-center gap-2.5">
+            <div class="p-2 rounded-xl bg-rose-500/20 text-rose-400">
+              <svg
+                class="w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                />
+              </svg>
+            </div>
+            <div>
+              <h3 class="text-lg font-bold text-white">
+                Nhập dữ liệu API phim mới
+              </h3>
+              <p class="text-xs text-slate-400">
+                Dán JSON từ API tương tự để thưởng thức bất kỳ bộ phim nào
+              </p>
+            </div>
+          </div>
+          <button
+            id="close-modal-btn"
+            class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-cinema-800 transition-colors"
+          >
+            <svg
+              class="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Textarea input -->
+        <div class="flex-1 space-y-2">
+          <label
+            for="json-input"
+            class="text-xs font-medium text-slate-300 block"
+            >Dán chuỗi JSON vào đây:</label
+          >
+          <textarea
+            id="json-input"
+            rows="10"
+            placeholder='{"status": true, "movie": {...}, "episodes": [...]}'
+            class="w-full bg-cinema-950 font-mono text-xs text-slate-200 p-3.5 rounded-xl border border-white/10 focus:border-rose-500 focus:outline-none focus:ring-1 focus:ring-rose-500 placeholder-slate-600 resize-none transition-colors"
+          ></textarea>
+          <div
+            class="flex items-center justify-between text-[11px] text-slate-500"
+          >
+            <span
+              >Hỗ trợ cấu trúc tiêu chuẩn: movie {...} và episodes
+              [{server_name, server_data}]</span
+            >
+            <button
+              id="btn-load-default"
+              class="text-rose-400 hover:text-rose-300 font-medium underline"
+            >
+              Nạp lại LEGO ONE PIECE mặc định
+            </button>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div
+          class="flex items-center justify-end gap-3 pt-3 border-t border-white/10"
+        >
+          <button
+            id="cancel-modal-btn"
+            class="px-4 py-2 rounded-xl bg-cinema-800 hover:bg-cinema-700 text-xs font-semibold text-slate-300 transition-colors"
+          >
+            Hủy bỏ
+          </button>
+          <button
+            id="apply-json-btn"
+            class="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-bold text-white shadow-lg shadow-rose-600/30 transition-all flex items-center gap-2"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            <span>Áp dụng & Tải phim</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUSTOM TOAST NOTIFICATION CONTAINER (Strictly avoid native alert) -->
+    <div
+      id="toast-container"
+      class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 max-w-sm pointer-events-none"
+    ></div>
+
+    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <script>
+      // Initial Movie JSON provided in user prompt
+      const DEFAULT_MOVIE_DATA = {
+        status: true,
+        msg: "",
+        movie: {
+          tmdb: {
+            type: "tv",
+            id: "318918",
+            season: null,
+            vote_average: "10.0",
+            vote_count: 1,
+          },
+          imdb: {
+            id: "tt41538904",
+          },
+          created: {
+            time: "2026-09-29T14:22:35+07:00",
+          },
+          modified: {
+            time: "2026-09-29T14:22:35+07:00",
+          },
+          _id: 53236,
+          name: "LEGO ONE PIECE",
+          origin_name: "LEGO ONE PIECE",
+          slug: "lego-one-piece",
+          content:
+            "Usopp spins a tall tale about the Straw Hats' journey across the East Blue into the Grand Line before Chopper joined the crew.",
+          type: "series",
+          status: "completed",
+          poster_url:
+            "https://vsmov.com/storage/images/1ftqNLph1CxcXxSXJsijjlw7ZkX.jpg",
+          thumb_url:
+            "https://vsmov.com/storage/images/iuPKz4EJacRNYbls3B3n6H6LLlm.jpg",
+          trailer_url: null,
+          time: "35 phút",
+          episode_current: "Hoàn Tất (2/2)",
+          episode_total: "2",
+          quality: "HD",
+          lang: "Vietsub + Lồng tiếng",
+          notify: null,
+          showtimes: null,
+          year: 2026,
+          keywords: [
+            "based on comic",
+            "miniseries",
+            "pirate",
+            "spin off",
+            "swashbuckler",
+            "quest",
+            "lego",
+          ],
+          view: 17,
+          chieurap: false,
+          sub_docquyen: false,
+          actor: [
+            "Iñaki Godoy",
+            "Emily Rudd",
+            "Mackenyu",
+            "Jacob Gibson",
+            "Taz Skylar",
+            "Charithra Chandran",
+            "Mikaela Hoover",
+          ],
+          director: [],
+          category: [
+            { id: 20, name: "Hài", slug: "hai" },
+            { id: 21, name: "Hoạt Hình", slug: "hoat-hinh" },
+            { id: 30, name: "Hành Động", slug: "hanh-dong" },
+            { id: 46, name: "Viễn Tưởng", slug: "vien-tuong" },
+            { id: 47, name: "Gia Đình", slug: "gia-dinh" },
+          ],
+          country: [
+            { id: 7, name: "Âu Mỹ", slug: "au-my" },
+            { id: 17, name: "Nhật Bản", slug: "nhat-ban" },
+            { id: 19, name: "Canada", slug: "canada" },
+          ],
+        },
+        episodes: [
+          {
+            server_name: "Vietsub #1",
+            server_data: [
+              {
+                name: "1",
+                slug: "tap-1",
+                filename: "1",
+                link_embed:
+                  "https://v8.streamvsmov.com/video/9c94097a-aa73-4853-b691-f53ebac7e438",
+              },
+              {
+                name: "2",
+                slug: "tap-2",
+                filename: "2",
+                link_embed:
+                  "https://v8.streamvsmov.com/video/42f17372-2476-47f5-8148-a9fcdcad0506",
+              },
+            ],
+          },
+          {
+            server_name: "Lồng tiếng #1",
+            server_data: [
+              {
+                name: "1",
+                slug: "tap-1",
+                filename: "1",
+                link_embed:
+                  "https://v8.streamvsmov.com/video/5b16d373-0fc6-4394-90c2-ea5fb723c59e",
+              },
+              {
+                name: "2",
+                slug: "tap-2",
+                filename: "2",
+                link_embed:
+                  "https://v8.streamvsmov.com/video/41c4ab0a-22fb-4434-b8a5-5bb774fe0563",
+              },
+            ],
+          },
+        ],
+      };
+
+      // State Variables
+      let currentMovie = DEFAULT_MOVIE_DATA;
+      let currentServerIndex = 0;
+      let currentEpisodeIndex = 0;
+      let isTheaterMode = false;
+      let isLightsOff = false;
+
+      // Toast notification utility
+      function showToast(message, type = "info") {
+        const container = document.getElementById("toast-container");
+        const toast = document.createElement("div");
+
+        const colors = {
+          success: "bg-emerald-600/95 border-emerald-400 text-white",
+          error: "bg-rose-600/95 border-rose-400 text-white",
+          info: "bg-cinema-800/95 border-white/20 text-slate-100",
+          warning: "bg-amber-600/95 border-amber-300 text-black font-semibold",
+        };
+
+        toast.className = `flex items-center gap-2.5 px-4 py-3 rounded-xl border backdrop-blur-md shadow-2xl pointer-events-auto transform translate-y-3 opacity-0 transition-all duration-300 ${colors[type] || colors.info}`;
+        toast.innerHTML = `
+        <span class="text-xs font-medium leading-relaxed">${message}</span>
+      `;
+
+        container.appendChild(toast);
+        // Trigger entrance transition
+        requestAnimationFrame(() => {
+          toast.classList.remove("translate-y-3", "opacity-0");
+        });
+
+        // Auto dismiss after 3.5s
+        setTimeout(() => {
+          toast.classList.add("opacity-0", "translate-x-4");
+          setTimeout(() => toast.remove(), 300);
+        }, 3500);
+      }
+
+      // Helper to sanitize server name string (strip whitespace/newlines)
+      function sanitizeServerName(name) {
+        if (!name) return "Server #1";
+        return name
+          .replace(/\r?\n|\r/g, " ")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      // Load episode into the iframe
+      function loadEpisode(serverIdx, epIdx) {
+        const episodes = currentMovie.episodes;
+        if (!episodes || !episodes[serverIdx]) return;
+
+        const server = episodes[serverIdx];
+        const epList = server.server_data || [];
+        if (!epList[epIdx]) return;
+
+        currentServerIndex = serverIdx;
+        currentEpisodeIndex = epIdx;
+
+        const episode = epList[epIdx];
+        const videoFrame = document.getElementById("video-frame");
+        const loader = document.getElementById("player-loader");
+        const cleanServerName = sanitizeServerName(server.server_name);
+
+        // Show loader
+        loader.classList.remove("opacity-0", "pointer-events-none");
+
+        // Update frame source
+        videoFrame.src = episode.link_embed;
+
+        // Update HUD & status labels
+        const epLabel = `Tập ${episode.name || epIdx + 1}`;
+        document.getElementById("player-badge-current").textContent =
+          `${epLabel} - ${cleanServerName}`;
+        document.getElementById("current-now-playing-label").innerHTML = `
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        ${epLabel}
+      `;
+        document.getElementById("current-server-label").textContent =
+          cleanServerName;
+        document.getElementById("btn-direct-link").href = episode.link_embed;
+
+        // Update Prev / Next Buttons state
+        const prevBtn = document.getElementById("btn-prev-ep");
+        const nextBtn = document.getElementById("btn-next-ep");
+        prevBtn.disabled = epIdx <= 0;
+        nextBtn.disabled = epIdx >= epList.length - 1;
+
+        // Re-highlight episode buttons
+        updateEpisodeActiveUI();
+
+        // Iframe load listener
+        videoFrame.onload = () => {
+          setTimeout(() => {
+            loader.classList.add("opacity-0", "pointer-events-none");
+          }, 400);
+        };
+
+        // In case onload doesn't fire due to embed CORS
+        setTimeout(() => {
+          loader.classList.add("opacity-0", "pointer-events-none");
+        }, 2000);
+      }
+
+      // Update active button styles for episodes
+      function updateEpisodeActiveUI() {
+        const buttons = document.querySelectorAll(".episode-btn");
+        buttons.forEach((btn, idx) => {
+          if (idx === currentEpisodeIndex) {
+            btn.className =
+              "episode-btn px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 text-white shadow-lg shadow-rose-600/30 border border-rose-500 scale-102 transition-all flex items-center justify-center gap-1.5";
+            btn.innerHTML = `
+            <svg class="w-3 h-3 fill-current animate-pulse" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            Tập ${btn.dataset.epName}
+          `;
+          } else {
+            btn.className =
+              "episode-btn px-4 py-2 rounded-xl text-xs font-semibold bg-cinema-850 hover:bg-cinema-750 text-slate-300 hover:text-white border border-white/10 transition-all flex items-center justify-center";
+            btn.innerHTML = `Tập ${btn.dataset.epName}`;
+          }
+        });
+      }
+
+      // Render Server switcher buttons
+      function renderServers() {
+        const container = document.getElementById("server-tabs-container");
+        container.innerHTML = "";
+        const episodes = currentMovie.episodes || [];
+
+        episodes.forEach((server, index) => {
+          const btn = document.createElement("button");
+          const cleanName = sanitizeServerName(server.server_name);
+          const isActive = index === currentServerIndex;
+
+          btn.className = `px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+            isActive
+              ? "bg-rose-600 text-white shadow-sm"
+              : "text-slate-400 hover:text-slate-200 hover:bg-cinema-850"
+          }`;
+          btn.textContent = cleanName;
+          btn.addEventListener("click", () => {
+            if (currentServerIndex !== index) {
+              currentServerIndex = index;
+              renderServers();
+              renderEpisodes();
+              loadEpisode(currentServerIndex, 0);
+              showToast(`Đã chuyển sang ${cleanName}`, "info");
+            }
+          });
+          container.appendChild(btn);
+        });
+      }
+
+      // Render Episode buttons for the currently chosen server
+      function renderEpisodes() {
+        const container = document.getElementById("episodes-container");
+        container.innerHTML = "";
+        const server = currentMovie.episodes?.[currentServerIndex];
+        const epList = server?.server_data || [];
+
+        document.getElementById("episodes-count-text").textContent =
+          `${epList.length} tập có sẵn`;
+
+        epList.forEach((ep, index) => {
+          const btn = document.createElement("button");
+          btn.dataset.epName = ep.name || index + 1;
+          btn.addEventListener("click", () => {
+            loadEpisode(currentServerIndex, index);
+          });
+          container.appendChild(btn);
+        });
+
+        updateEpisodeActiveUI();
+      }
+
+      // Setup metadata view
+      function renderMovieMetadata(data) {
+        const m = data.movie || {};
+
+        // Title & origins
+        document.getElementById("nav-movie-name").textContent =
+          m.name || "Phim";
+        document.getElementById("movie-title").textContent =
+          m.name || "Không có tên";
+        document.getElementById("movie-origin-title").textContent =
+          `${m.origin_name || m.name || ""} (${m.year || ""})`;
+        document.title = `CineStream - ${m.name || "Xem Phim"}`;
+
+        // Poster & Backdrop
+        const posterUrl = m.poster_url || m.thumb_url || "";
+        const posterImg = document.getElementById("movie-poster-img");
+        posterImg.src = posterUrl;
+
+        const ambientBg = document.getElementById("ambient-poster-bg");
+        if (posterUrl) {
+          ambientBg.style.backgroundImage = `url('${posterUrl}')`;
+        }
+
+        // Badges
+        document.getElementById("badge-quality").textContent =
+          m.quality || "HD";
+        document.getElementById("badge-lang").textContent =
+          m.lang || "Thuyết minh";
+        document.getElementById("badge-status").textContent =
+          m.episode_current || "Đang cập nhật";
+        document.getElementById("meta-year").textContent = m.year || "2026";
+        document.getElementById("meta-type").textContent = m.type || "Phim";
+
+        // TMDB & IMDb
+        const tmdbRating = m.tmdb?.vote_average || "N/A";
+        document.getElementById("rating-tmdb-value").textContent = tmdbRating;
+        if (m.imdb?.id) {
+          document.getElementById("imdb-tag").textContent = `IMDb ${m.imdb.id}`;
+          document.getElementById("imdb-tag").classList.remove("hidden");
+        } else {
+          document.getElementById("imdb-tag").classList.add("hidden");
+        }
+
+        // Stats
+        document.getElementById("stat-views").textContent = m.view
+          ? Number(m.view).toLocaleString("vi-VN")
+          : "0";
+        document.getElementById("stat-time").textContent =
+          m.time || "Thời lượng: N/A";
+
+        // Synopsis / Content
+        document.getElementById("movie-content").textContent =
+          m.content || "Chưa có thông tin nội dung chi tiết.";
+
+        // Actors chips
+        const actorsContainer = document.getElementById("actors-container");
+        actorsContainer.innerHTML = "";
+        const actors = m.actor || [];
+        if (actors.length > 0) {
+          actors.forEach((actor) => {
+            const chip = document.createElement("span");
+            chip.className =
+              "px-3 py-1 rounded-lg bg-cinema-850 hover:bg-cinema-750 text-slate-200 text-xs font-medium border border-white/10 transition-colors flex items-center gap-1.5";
+            chip.innerHTML = `
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+            ${actor}
+          `;
+            actorsContainer.appendChild(chip);
+          });
+        } else {
+          actorsContainer.innerHTML =
+            '<span class="text-xs text-slate-500">Đang cập nhật danh sách diễn viên</span>';
+        }
+
+        // Genres
+        const genresContainer = document.getElementById("genres-container");
+        genresContainer.innerHTML = "";
+        const genres = m.category || [];
+        if (genres.length > 0) {
+          genres.forEach((cat) => {
+            const badge = document.createElement("span");
+            badge.className =
+              "px-2.5 py-1 rounded-md bg-rose-950/40 border border-rose-500/20 text-rose-300 text-xs font-medium";
+            badge.textContent = cat.name;
+            genresContainer.appendChild(badge);
+          });
+        } else {
+          genresContainer.innerHTML =
+            '<span class="text-xs text-slate-500">Đang cập nhật thể loại</span>';
+        }
+
+        // Countries
+        const countriesContainer = document.getElementById(
+          "countries-container",
+        );
+        countriesContainer.innerHTML = "";
+        const countries = m.country || [];
+        if (countries.length > 0) {
+          countries.forEach((cty) => {
+            const badge = document.createElement("span");
+            badge.className =
+              "px-2.5 py-1 rounded-md bg-cinema-800 border border-white/10 text-slate-300 text-xs font-medium";
+            badge.textContent = cty.name;
+            countriesContainer.appendChild(badge);
+          });
+        } else {
+          countriesContainer.innerHTML =
+            '<span class="text-xs text-slate-500">Đang cập nhật quốc gia</span>';
+        }
+
+        // Keywords
+        const kwContainer = document.getElementById("keywords-container");
+        kwContainer.innerHTML = "";
+        const keywords = m.keywords || [];
+        if (keywords.length > 0) {
+          keywords.forEach((kw) => {
+            const tag = document.createElement("span");
+            tag.className =
+              "px-2 py-0.5 rounded text-[11px] bg-cinema-900 text-slate-400 border border-white/5";
+            tag.textContent = `#${kw}`;
+            kwContainer.appendChild(tag);
+          });
+        } else {
+          kwContainer.innerHTML =
+            '<span class="text-xs text-slate-600">Không có từ khóa</span>';
+        }
+      }
+
+      // Theater & Light toggles
+      function setupControls() {
+        // Toggle Lights
+        const lightsBtn = document.getElementById("toggle-lights-btn");
+        const lightsText = document.getElementById("lights-text");
+        lightsBtn.addEventListener("click", () => {
+          isLightsOff = !isLightsOff;
+          if (isLightsOff) {
+            document.body.classList.add("lights-off");
+            lightsText.textContent = "Bật đèn";
+            lightsBtn.classList.add("text-amber-400", "border-amber-400/40");
+            showToast("Đã tắt đèn phòng chiếu", "info");
+          } else {
+            document.body.classList.remove("lights-off");
+            lightsText.textContent = "Tắt đèn";
+            lightsBtn.classList.remove("text-amber-400", "border-amber-400/40");
+          }
+        });
+
+        // Dismiss lights when clicking dimmer
+        document
+          .getElementById("lights-dimmer")
+          .addEventListener("click", () => {
+            if (isLightsOff) {
+              lightsBtn.click();
+            }
+          });
+
+        // Theater Mode (Expand width)
+        const theaterBtn = document.getElementById("theater-mode-btn");
+        const theaterText = document.getElementById("theater-text");
+        const playerContainer = document.getElementById("player-container");
+
+        theaterBtn.addEventListener("click", () => {
+          isTheaterMode = !isTheaterMode;
+          if (isTheaterMode) {
+            playerContainer.classList.add("max-w-none", "scale-100");
+            playerContainer.classList.remove("max-w-7xl");
+            theaterText.textContent = "Thu nhỏ";
+            theaterBtn.classList.add("text-rose-400", "border-rose-500/40");
+            showToast("Đã mở rộng màn hình rạp chiếu", "info");
+          } else {
+            playerContainer.classList.remove("max-w-none");
+            playerContainer.classList.add("max-w-7xl");
+            theaterText.textContent = "Rộng màn";
+            theaterBtn.classList.remove("text-rose-400", "border-rose-500/40");
+          }
+        });
+
+        // Reload Frame
+        document
+          .getElementById("btn-reload-player")
+          .addEventListener("click", () => {
+            loadEpisode(currentServerIndex, currentEpisodeIndex);
+            showToast("Đang làm mới trình phát...", "info");
+          });
+
+        // Prev / Next Episode Buttons
+        document.getElementById("btn-prev-ep").addEventListener("click", () => {
+          if (currentEpisodeIndex > 0) {
+            loadEpisode(currentServerIndex, currentEpisodeIndex - 1);
+          }
+        });
+
+        document.getElementById("btn-next-ep").addEventListener("click", () => {
+          const total =
+            currentMovie.episodes?.[currentServerIndex]?.server_data?.length ||
+            0;
+          if (currentEpisodeIndex < total - 1) {
+            loadEpisode(currentServerIndex, currentEpisodeIndex + 1);
+          }
+        });
+      }
+
+      // Modal & JSON import logic
+      function setupModal() {
+        const modal = document.getElementById("json-modal");
+        const card = document.getElementById("json-modal-card");
+        const openBtn = document.getElementById("open-json-modal-btn");
+        const closeBtn = document.getElementById("close-modal-btn");
+        const cancelBtn = document.getElementById("cancel-modal-btn");
+        const applyBtn = document.getElementById("apply-json-btn");
+        const resetBtn = document.getElementById("btn-load-default");
+        const jsonInput = document.getElementById("json-input");
+
+        function openModal() {
+          modal.classList.remove("opacity-0", "pointer-events-none");
+          card.classList.remove("scale-95");
+          card.classList.add("scale-100");
+          jsonInput.value = JSON.stringify(currentMovie, null, 2);
+        }
+
+        function closeModal() {
+          modal.classList.add("opacity-0", "pointer-events-none");
+          card.classList.remove("scale-100");
+          card.classList.add("scale-95");
+        }
+
+        openBtn.addEventListener("click", openModal);
+        closeBtn.addEventListener("click", closeModal);
+        cancelBtn.addEventListener("click", closeModal);
+
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) closeModal();
+        });
+
+        resetBtn.addEventListener("click", () => {
+          jsonInput.value = JSON.stringify(DEFAULT_MOVIE_DATA, null, 2);
+          showToast("Đã điền lại JSON LEGO ONE PIECE mặc định", "info");
+        });
+
+        applyBtn.addEventListener("click", () => {
+          const text = jsonInput.value.trim();
+          if (!text) {
+            showToast("Vui lòng nhập chuỗi JSON hợp lệ!", "warning");
+            return;
+          }
+
+          try {
+            const parsed = JSON.parse(text);
+
+            // Basic verification
+            if (
+              !parsed.movie ||
+              !parsed.episodes ||
+              !Array.isArray(parsed.episodes)
+            ) {
+              showToast(
+                'JSON thiếu cấu trúc "movie" hoặc "episodes" cần thiết!',
+                "error",
+              );
+              return;
+            }
+
+            currentMovie = parsed;
+            currentServerIndex = 0;
+            currentEpisodeIndex = 0;
+
+            // Re-render entire page
+            renderMovieMetadata(currentMovie);
+            renderServers();
+            renderEpisodes();
+            loadEpisode(0, 0);
+
+            closeModal();
+            showToast(
+              `Đã nạp phim thành công: ${currentMovie.movie.name || "Phim mới"}`,
+              "success",
+            );
+          } catch (err) {
+            console.error(err);
+            showToast(`Lỗi phân tích cú pháp JSON: ${err.message}`, "error");
+          }
+        });
+      }
+
+      // Initializing the application on load
+      window.addEventListener("DOMContentLoaded", () => {
+        // 1. Render movie metadata
+        renderMovieMetadata(currentMovie);
+
+        // 2. Render servers and episodes
+        renderServers();
+        renderEpisodes();
+
+        // 3. Mount initial video (Episode 1, Server 1)
+        loadEpisode(0, 0);
+
+        // 4. Bind controls and modal
+        setupControls();
+        setupModal();
+
+        // 5. Welcome toast
+        setTimeout(() => {
+          showToast(
+            "Chào mừng bạn đến với CineStream! Thưởng thức LEGO ONE PIECE",
+            "info",
+          );
+        }, 1000);
+      });
+    </script>
+  </body>
+</html>
